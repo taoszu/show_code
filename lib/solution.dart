@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
 import 'package:flutter_html/flutter_html.dart';
 
+import 'html/html_view.dart';
+
 class Solution extends StatefulWidget {
   Solution(this.name);
 
@@ -42,11 +44,8 @@ class _SolutionState extends State<Solution> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("答案")),
-        body: SingleChildScrollView(
-          child: Html(
-            data: solutionHtml,
-            padding: EdgeInsets.only(left: 12, right: 12, top:18),
-          ),
-        ));
+        body: HtmlView(
+        data: solutionHtml
+    ));
   }
 }
