@@ -22,7 +22,7 @@ class _HtmlViewState extends State<HtmlView> {
   @override
   Widget build(BuildContext context) {
     String html = widget.data;
-    if(html == null || html.isEmpty) {
+    if (html == null || html.isEmpty) {
       return Container();
     }
 
@@ -32,7 +32,7 @@ class _HtmlViewState extends State<HtmlView> {
     print(children);
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(12),
+      physics: BouncingScrollPhysics(),
       child: RichText(text: TextSpan(text: "", children: children)),
     );
   }
@@ -114,7 +114,17 @@ class _HtmlViewState extends State<HtmlView> {
 
   genBlockSpanWidget({@required String text}) {
     return WidgetSpan(
-        child: Container(color: Colors.grey[200], child: Text(text)));
+        child: DecoratedBox(
+            decoration: BoxDecoration(color: Color(0XFFF8F8F8)),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.all(12),
+              child: Text(text, style: TextStyle(
+                color: Color(0xFF333333),
+                height: 1.75
+              )),
+            )));
   }
 
   genTextSpanWidget({@required String text, TextStyle textStyle}) {
@@ -124,13 +134,13 @@ class _HtmlViewState extends State<HtmlView> {
 
     TextStyle realStyle = textStyle;
     if (realStyle == null) {
-      realStyle = TextStyle(fontSize: 16, color: Colors.black54);
+      realStyle = TextStyle(fontSize: 16, color: Color(0xFF333333));
     }
     return TextSpan(text: text, style: realStyle);
   }
 
   handleStyleElement(String tagName) {
-    TextStyle textStyle = TextStyle(fontSize: 16, color: Colors.black54);
+    TextStyle textStyle = TextStyle(fontSize: 16, color: Color(0xFF333333));
     TextStyle titleStyle = handleTitleStyle(tagName);
     if (titleStyle != null) {
       return textStyle.merge(titleStyle);

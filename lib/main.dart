@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 
 import 'package:show_code/problem.dart';
 
+import 'db/db.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor:Colors.grey[100],
+        backgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
           elevation: 0
         )
@@ -57,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    DbInstance.printRecord();
     _fetchProblems();
   }
 

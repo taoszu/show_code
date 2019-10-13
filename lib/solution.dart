@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
-import 'package:flutter_html/flutter_html.dart';
 
 import 'html/html_view.dart';
 
@@ -44,8 +43,9 @@ class _SolutionState extends State<Solution> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("答案")),
-        body: HtmlView(
-        data: solutionHtml
-    ));
+        backgroundColor: Colors.white,
+        body: Padding(
+            padding: EdgeInsets.all(12),
+            child: HtmlView(data: solutionHtml)));
   }
 }

@@ -165,6 +165,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.5"
+  sembast:
+    dependency: "direct main"
+    description:
+      name: sembast
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -198,6 +205,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0+1"
   term_glyph:
     dependency: transitive
     description:
