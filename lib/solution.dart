@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
 
+import 'db/db.dart';
 import 'html/html_view.dart';
 
 class Solution extends StatefulWidget {
@@ -23,6 +24,19 @@ class _SolutionState extends State<Solution> {
   }
 
   _fetchSolution() {
+    final dbInstance = DbInstance();
+    dbInstance.getSolution(widget.name).then((solutionHtml) {
+      if(solutionHtml != null) {
+        setState(() {
+          this.solutionHtml = solutionHtml;
+        });
+      } else {
+        _fetchSolutionByNet();
+      }
+    });
+  }
+
+  _fetchSolutionByNet() {
     final solutionUrl =
         "https://raw.githubusercontent.com/taoszu/leetcode_notes/master/" +
             widget.name +
@@ -30,6 +44,9 @@ class _SolutionState extends State<Solution> {
     try {
       Dio().get(solutionUrl).then((response) {
         String html = markdownToHtml(response.data);
+        DbInstance().storeSolution(widget.name, html);
+        if (!mounted) return;
+
         setState(() {
           solutionHtml = html;
         });

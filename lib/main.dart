@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 
 import 'package:show_code/problem.dart';
 
-import 'db/db.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,14 +11,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark
+    ));
+
     return MaterialApp(
       title: 'Show Code',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor:Colors.grey[100],
+          primaryColor:Colors.white,
         backgroundColor: Colors.white,
+          scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme(
-          elevation: 0
+          elevation: 0,
         )
       ),
       home: HomePage(title: 'Flutter Demo Home Page'),
@@ -41,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   // 问题目录url
   final String _problemsDirUrl = "https://api.github.com/repos/taoszu/leetcode_notes/contents";
 
-  _fetchProblems() async {
+  _fetchProblems() {
     try {
       Dio().get(_problemsDirUrl).then((response) {
         if(response != null && response.data != null) {
@@ -60,7 +66,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    DbInstance.printRecord();
     _fetchProblems();
   }
 
@@ -70,7 +75,8 @@ class _HomePageState extends State<HomePage> {
     ListView.builder(
         itemCount: _problems.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(title: Text("${index+1}.  ${_problems[index]}"), onTap: (){
+          return ListTile(title: Text("${index+1}.  ${_problems[index]}",
+          style: TextStyle(fontSize: 16)), onTap: (){
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Problem(_problems[index])));
           });
         }

@@ -27,9 +27,7 @@ class _HtmlViewState extends State<HtmlView> {
     }
 
     final document = parse(html);
-    print(document.outerHtml);
     final children = parseElement(document.body);
-    print(children);
 
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),

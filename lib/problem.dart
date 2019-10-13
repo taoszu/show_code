@@ -6,6 +6,8 @@ import 'package:html/dom.dart' as dom;
 import 'package:show_code/html/html_view.dart';
 import 'package:show_code/solution.dart';
 
+import 'db/db.dart';
+
 class Problem extends StatefulWidget {
   Problem(this.name);
 
@@ -25,6 +27,19 @@ class _ProblemState extends State<Problem> {
   }
 
   _fetchProblem() {
+    final dbInstance = DbInstance();
+    dbInstance.getProblem(widget.name).then((problemHtml) {
+      if(problemHtml != null) {
+        setState(() {
+          this.problemHtml = problemHtml;
+        });
+      } else {
+        _fetchProblemByNet();
+      }
+    });
+  }
+
+  _fetchProblemByNet() {
     final problemUrl =
         "https://raw.githubusercontent.com/taoszu/leetcode_notes/master/" +
             widget.name +
@@ -32,9 +47,11 @@ class _ProblemState extends State<Problem> {
     try {
       Dio().get(problemUrl).then((response) {
         String html = markdownToHtml(response.data);
+        DbInstance().storeProblem(widget.name, html);
+        if (!mounted) return;
+
         setState(() {
           problemHtml = html;
-          print(problemHtml);
         });
       });
     } catch (e) {
