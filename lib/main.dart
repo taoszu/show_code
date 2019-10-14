@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 
-import 'package:show_code/problem.dart';
+import 'package:show_code/problem_page.dart';
+
+import 'entry/problem.dart';
 
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  MyApp() {
+    Hive.init("db/app");
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -41,8 +49,9 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
-  List<String> _problems = [];
+  List<Problem> _problems = [];
 
   // 问题目录url
   final String _problemsDirUrl = "https://api.github.com/repos/taoszu/leetcode_notes/contents";
@@ -51,8 +60,10 @@ class _HomePageState extends State<HomePage> {
     try {
       Dio().get(_problemsDirUrl).then((response) {
         if(response != null && response.data != null) {
-          List<String> problems = [];
-          response.data.forEach((problem) => problems.add(problem["name"]));
+          List<Problem> problems = [];
+          response.data.forEach((problem) => problems.add(
+              Problem(problem["name"], problem["sha"])
+          ));
           setState(() {
             _problems = problems;
           });
@@ -75,9 +86,9 @@ class _HomePageState extends State<HomePage> {
     ListView.builder(
         itemCount: _problems.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(title: Text("${index+1}.  ${_problems[index]}",
+          return ListTile(title: Text("${index+1}.  ${_problems[index].name}",
           style: TextStyle(fontSize: 16)), onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Problem(_problems[index])));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProblemPage(_problems[index].name)));
           });
         }
     );

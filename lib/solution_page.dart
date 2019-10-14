@@ -5,16 +5,16 @@ import 'package:markdown/markdown.dart' hide Text, Node;
 import 'db/db.dart';
 import 'html/html_view.dart';
 
-class Solution extends StatefulWidget {
-  Solution(this.name);
+class SolutionPage extends StatefulWidget {
+  SolutionPage(this.name);
 
   final String name;
 
   @override
-  _SolutionState createState() => _SolutionState();
+  _SolutionPageState createState() => _SolutionPageState();
 }
 
-class _SolutionState extends State<Solution> {
+class _SolutionPageState extends State<SolutionPage> {
   String solutionHtml = "";
 
   @override

@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:sembast/sembast.dart';
-
-//import 'package:sembast/sembast_io.dart';
-import 'package:sembast/sembast_memory.dart';
+import 'package:hive/hive.dart';
 
 class Store {
   static const String problem = "problem";
@@ -14,7 +10,6 @@ class DbInstance {
   factory DbInstance() => _dbInstance();
 
   static DbInstance _instance;
-  Database _database;
 
   DbInstance._();
 
@@ -23,26 +18,6 @@ class DbInstance {
       _instance = DbInstance._();
     }
     return _instance;
-  }
-
-  Future<Database> getDatabase() async {
-    Database database = _instance._database;
-    if (database != null) {
-      return Future<Database>(() => database);
-    } else {
-      //web不支持io持久化
-      if (kIsWeb) {
-      } else {
-        // database = await databaseFactoryIo.openDatabase("app.db");
-      }
-      database = await databaseFactoryMemoryFs.openDatabase("app.db");
-      if (database is Database) {
-        _instance._database = database;
-        return Future<Database>(() => database);
-      } else {
-        return Future<Database>(() => null);
-      }
-    }
   }
 
   Future<String> getProblem(String key) async {
@@ -63,23 +38,19 @@ class DbInstance {
   }
 
   void _store(String storeName, String key, String content) {
-    getDatabase().then((db) {
-      final store = stringMapStoreFactory.store(storeName);
-      store.record(key).put(db, {"content": content});
+    Hive.openBox(storeName).then((box) {
+      if(box != null) {
+        box.put(key, content);
+      }
     });
   }
 
   // [key] 问题的名字
   Future<String> _get(String storeName, String key) async {
-    Database db = await getDatabase();
-    if (db != null) {
-      final store = stringMapStoreFactory.store(storeName);
-      final record = await store.record(key).get(db);
-      if (record == null) {
-        return Future(() => null);
-      } else {
-        return Future(() => record["content"]);
-      }
+    final box = await Hive.openBox(storeName);
+    if (box != null) {
+      final content = box.get(key);
+      return Future(() => content);
     }
     return Future(() => null);
   }
