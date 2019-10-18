@@ -5,8 +5,8 @@ import 'package:hive/hive.dart';
 
 import 'package:show_code/problem_page.dart';
 
+import 'db/db.dart';
 import 'entry/problem.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -21,20 +21,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark
-    ));
+        statusBarBrightness: Brightness.dark));
 
     return MaterialApp(
       title: 'Show Code',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor:Colors.white,
-        backgroundColor: Colors.white,
+          primaryColor: Colors.white,
+          backgroundColor: Colors.white,
           scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
-          elevation: 0,
-        )
-      ),
+          appBarTheme: AppBarTheme(
+            elevation: 0,
+          )),
       home: HomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -49,21 +47,21 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   List<Problem> _problems = [];
 
   // 问题目录url
-  final String _problemsDirUrl = "https://api.github.com/repos/taoszu/leetcode_notes/contents";
+  final String _problemsDirUrl =
+      "https://api.github.com/repos/taoszu/leetcode_notes/contents";
 
   _fetchProblems() {
     try {
       Dio().get(_problemsDirUrl).then((response) {
-        if(response != null && response.data != null) {
+        if (response != null && response.data is List) {
           List<Problem> problems = [];
-          response.data.forEach((problem) => problems.add(
-              Problem(problem["name"], problem["sha"])
-          ));
+          response.data.forEach((problem) {
+            problems.add(Problem(problem["name"], problem["sha"]));
+          });
           setState(() {
             _problems = problems;
           });
@@ -82,22 +80,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final problemsList =
-    ListView.builder(
+    final problemsList = ListView.builder(
         itemCount: _problems.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(title: Text("${index+1}.  ${_problems[index].name}",
-          style: TextStyle(fontSize: 16)), onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProblemPage(_problems[index].name)));
-          });
-        }
-    );
-
+          return ListTile(
+              title: Text("${index + 1}.  ${_problems[index].name}",
+                  style: TextStyle(fontSize: 16)),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProblemPage(_problems[index])));
+              });
+        });
 
     return Scaffold(
         appBar: AppBar(title: Text("首页")),
         body: Container(
-      child: problemsList,
-    ));
+          child: problemsList,
+        ));
   }
 }
