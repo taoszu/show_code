@@ -1,11 +1,7 @@
 import 'package:hive/hive.dart';
 
-class Store {
-  // 存放文件指纹信息
-  static const String sha = "sha";
-  static const String problem = "problem";
-  static const String solution = "solution";
-}
+import '../utils.dart';
+import 'package:show_code/type.dart';
 
 class DbInstance {
   // 单例公开访问点
@@ -22,46 +18,27 @@ class DbInstance {
     return _instance;
   }
 
-  // 获取问题目录sha
-  Future<String> getDirSha(String key) async {
-    return _get(Store.sha, key + "_dir");
+  void storeContentByType(String typeName, String name, String content) {
+    _store(typeName, _appendSuffix(name, "content"), content);
   }
 
-
-  void storeDirSha(String key, String content) {
-    _store(Store.sha, key + "_dir", content);
+  Future<String> getContentByType(Type type, String name) {
+    String typeName = Utils.getTypeName(type);
+    return _get(typeName, _appendSuffix(name, "content"));
   }
 
-  Future<String> getSha(String key) async {
-    return _get(Store.sha, key);
+  void storeShaByType(Type type, String name, String sha) {
+    String typeName = Utils.getTypeName(type);
+    _store(typeName, _appendSuffix(name, "sha"), sha);
   }
 
-  void storeSha(String key, String content) {
-    _store(Store.sha, key, content);
+  Future<String> getShaByType(Type type, String name) {
+    String typeName = Utils.getTypeName(type);
+    return _get(typeName,  _appendSuffix(name, "sha"));
   }
 
-  void storeShaMap(Map<String, String> shaMap) {
-    Hive.openBox(Store.sha).then((box) {
-      if(box != null) {
-        box.putAll(shaMap);
-      }
-    });
-  }
-
-  Future<String> getProblem(String key) async {
-    return _get(Store.problem, key);
-  }
-
-  void storeProblem(String key, String content) {
-    _store(Store.problem, key, content);
-  }
-
-  Future<String> getSolution(String key) async {
-    return _get(Store.solution, key);
-  }
-
-  void storeSolution(String key, String content) {
-    _store(Store.solution, key, content);
+  _appendSuffix(String name, String suffix) {
+    return "${name}_$suffix";
   }
 
   void _store(String storeName, String key, String content) {

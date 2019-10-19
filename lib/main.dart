@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 
 import 'package:show_code/problem_page.dart';
 
-import 'db/db.dart';
 import 'entry/problem.dart';
 
 void main() => runApp(MyApp());
@@ -19,6 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));

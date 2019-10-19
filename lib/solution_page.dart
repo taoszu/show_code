@@ -1,59 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
+import 'package:show_code/fetcher.dart';
+import 'package:show_code/utils.dart';
 
 import 'db/db.dart';
+import 'entry/solution.dart';
 import 'html/html_view.dart';
+import 'package:show_code/type.dart';
 
 class SolutionPage extends StatefulWidget {
-  SolutionPage(this.name);
+  SolutionPage(this.solution);
 
-  final String name;
+  final Solution solution;
 
   @override
   _SolutionPageState createState() => _SolutionPageState();
 }
 
-class _SolutionPageState extends State<SolutionPage> {
+class _SolutionPageState extends State<SolutionPage> with Fetcher {
   String solutionHtml = "";
+  String name = "";
 
   @override
   void initState() {
     super.initState();
-    _fetchSolution();
+    name = widget.solution.name;
+    final newSha = widget.solution.sha;
+
+    _fetchWithSha(newSha);
   }
 
-  _fetchSolution() {
+  _fetchWithSha(String newSha) {
     final dbInstance = DbInstance();
-    dbInstance.getSolution(widget.name).then((solutionHtml) {
-      if(solutionHtml != null) {
-        setState(() {
-          this.solutionHtml = solutionHtml;
-        });
-      } else {
-        _fetchSolutionByNet();
+    var result;
+    if (widget.solution.ignoreSha) {
+      result = fetch(Type.solution, name);
+      _handleFetchResult(result);
+
+    } else {
+      dbInstance.getShaByType(Type.solution, name).then((oldSha) {
+        if (newSha == oldSha) {
+          result = fetch(Type.solution, name);
+        } else {
+          result = fetchWithSha(Type.solution, name, newSha);
+        }
+        _handleFetchResult(result);
+      });
+    }
+  }
+
+  _handleFetchResult(Future<String> result) {
+    result.then((content) {
+      if (Utils.notEmpty(content)) {
+        String html = markdownToHtml(content);
+        if (mounted) {
+          setState(() {
+            this.solutionHtml = html;
+          });
+        }
       }
     });
-  }
-
-  _fetchSolutionByNet() {
-    final solutionUrl =
-        "https://raw.githubusercontent.com/taoszu/leetcode_notes/master/" +
-            widget.name +
-            "/solution.md";
-    try {
-      Dio().get(solutionUrl).then((response) {
-        String html = markdownToHtml(response.data);
-        DbInstance().storeSolution(widget.name, html);
-        if (!mounted) return;
-
-        setState(() {
-          solutionHtml = html;
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
   }
 
   @override
@@ -62,7 +68,6 @@ class _SolutionPageState extends State<SolutionPage> {
         appBar: AppBar(title: Text("答案")),
         backgroundColor: Colors.white,
         body: Padding(
-            padding: EdgeInsets.all(12),
-            child: HtmlView(data: solutionHtml)));
+            padding: EdgeInsets.all(12), child: HtmlView(data: solutionHtml)));
   }
 }
