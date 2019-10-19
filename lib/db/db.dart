@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
 
 import '../utils.dart';
@@ -18,7 +20,27 @@ class DbInstance {
     return _instance;
   }
 
-  void storeContentByType(String typeName, String name, String content) {
+  void storeListByType(Type type, String name, List list) {
+    String typeName = Utils.getTypeName(type);
+    Hive.openBox(typeName).then((box) {
+      if(box != null) {
+        box.put(name, list);
+      }
+    });
+  }
+
+  Future<List> getListByType(Type type, String name) async {
+    String typeName = Utils.getTypeName(type);
+    final box = await Hive.openBox(typeName);
+    if (box != null) {
+      final content = box.get(name);
+      return Future(() => content);
+    }
+    return Future(() => []);
+  }
+
+  void storeContentByType(Type type, String name, String content) {
+    String typeName = Utils.getTypeName(type);
     _store(typeName, _appendSuffix(name, "content"), content);
   }
 
@@ -38,7 +60,8 @@ class DbInstance {
   }
 
   _appendSuffix(String name, String suffix) {
-    return "${name}_$suffix";
+    // key不能是非ASCII 字符
+    return base64Encode(utf8.encode("${name}_$suffix"));
   }
 
   void _store(String storeName, String key, String content) {

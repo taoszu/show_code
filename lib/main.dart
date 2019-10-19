@@ -1,11 +1,14 @@
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-
 import 'package:show_code/problem_page.dart';
 
+import 'db/db.dart';
 import 'entry/problem.dart';
+import 'type.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,12 +16,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
   MyApp() {
-    Hive.init("db/app");
+    String path="";
+    if(defaultTargetPlatform == TargetPlatform.android) {
+      path= "/data/user/0/com.taoszu.show_code/app_flutter";
+    } else if(defaultTargetPlatform == TargetPlatform.iOS) {
+      path= "/data/user/0/com.taoszu.show_code/app_flutter";
+    } else {
+      path = "app";
+    }
+    Hive.init(path);
   }
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));
@@ -54,17 +64,32 @@ class _HomePageState extends State<HomePage> {
   final String _problemsDirUrl =
       "https://api.github.com/repos/taoszu/leetcode_notes/contents";
 
+  _handleResult(data) {
+
+    if (data != null && data is List) {
+      print(data);
+
+      List<Problem> problems = [];
+      data.forEach((problem) {
+        problems.add(Problem(problem["name"], problem["sha"]));
+      });
+      setState(() {
+        _problems = problems;
+      });
+    }
+  }
+
   _fetchProblems() {
+    final dbInstance = DbInstance();
+    dbInstance.getListByType(Type.dir, "home").then((data) {
+      _handleResult(data);
+    });
+
     try {
       Dio().get(_problemsDirUrl).then((response) {
-        if (response != null && response.data is List) {
-          List<Problem> problems = [];
-          response.data.forEach((problem) {
-            problems.add(Problem(problem["name"], problem["sha"]));
-          });
-          setState(() {
-            _problems = problems;
-          });
+        if (response != null && response.data != null) {
+          dbInstance.storeListByType(Type.dir, "home", response.data);
+          _handleResult(response.data);
         }
       });
     } catch (e) {

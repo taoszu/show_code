@@ -45,7 +45,7 @@ class Fetcher {
         String content = utf8.decode(base64Decode(base64Content));
         String sha = data["sha"];
 
-        dbInstance.storeContentByType(typeName, name, content);
+        dbInstance.storeContentByType(type, name, content);
         dbInstance.storeShaByType(type, name, sha);
         return Future(() => content);
       }
