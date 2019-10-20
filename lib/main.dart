@@ -7,8 +7,8 @@ import 'package:hive/hive.dart';
 import 'package:show_code/problem_page.dart';
 
 import 'db/db.dart';
-import 'entry/problem.dart';
-import 'type.dart';
+import 'package:show_code/entry/problem.dart';
+import 'package:show_code/type.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,8 +67,6 @@ class _HomePageState extends State<HomePage> {
   _handleResult(data) {
 
     if (data != null && data is List) {
-      print(data);
-
       List<Problem> problems = [];
       data.forEach((problem) {
         problems.add(Problem(problem["name"], problem["sha"]));

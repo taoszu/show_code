@@ -5,9 +5,8 @@ class Utils {
   // 取出type的字符串
   // 把Type.Problem 转为 problem
   static getTypeName(Type type) {
-    String typePrefix = type.runtimeType.toString() + ".";
-    String typeName = type.toString();
-    return typeName.replaceAll(typePrefix, "").toLowerCase();
+    String typeName = type.toString().toLowerCase();
+    return typeName.replaceAll("type.", "");
   }
 
   // 移除base64多余的\n
