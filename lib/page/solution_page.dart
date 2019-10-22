@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
+import 'package:show_code/db/db.dart';
+import 'package:show_code/entry/solution.dart';
 import 'package:show_code/fetcher.dart';
+import 'package:show_code/html/html_view.dart';
 import 'package:show_code/utils.dart';
 
-import 'db/db.dart';
-import 'entry/solution.dart';
-import 'html/html_view.dart';
 import 'package:show_code/type.dart';
 
 class SolutionPage extends StatefulWidget {

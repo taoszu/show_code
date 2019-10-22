@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:markdown/markdown.dart' hide Text, Node;
 import 'package:flutter_html/flutter_html.dart';
+import 'package:show_code/db/db.dart';
+import 'package:show_code/entry/problem.dart';
+import 'package:show_code/entry/solution.dart';
 import 'package:show_code/fetcher.dart';
-import 'package:show_code/solution_page.dart';
+import 'package:show_code/page/solution_page.dart';
 import 'package:show_code/utils.dart';
 
-import 'db/db.dart';
-import 'entry/problem.dart';
-import 'entry/solution.dart';
 import 'package:show_code/type.dart';
 
 class ProblemPage extends StatefulWidget {
