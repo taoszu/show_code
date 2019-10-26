@@ -7,22 +7,20 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: checkout
       uses: actions/checkout@master
       
-    - name: SetJava
-      uses: actions/setup-java@v1
+    - name: install dependencies
+      uses: steebchen/flutter@v1.0.0
       with:
-        java-version: '12.x'
-    
-    - name: Build
-      uses: subosito/flutter-action@v1
+        args: pub get
+
+    - name: build
+      uses: steebchen/flutter@v1.0.0
       with:
-       channel: 'stable'
-    - run: flutter pub get
-    - run: flutter build web
-      
-    - name: Deploy
+        args: build web
+
+    - name: deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
         ACTIONS_DEPLOY_KEY: ${{ secrets.ACCESS_TOKEN }}
