@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         statusBarBrightness: Brightness.dark));
 
     return MaterialApp(
-      title: '算法题解',
+      title: 'LeetCode算法题解',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Colors.white,
