@@ -7,19 +7,16 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@master
       
-    - name: install dependencies
-      uses: steebchen/flutter@v1.0.0
+    - name: build   
+      uses: subosito/flutter-action@v1
       with:
-        args: pub get
-
-    - name: build
-      uses: steebchen/flutter@v1.0.0
-      with:
-        args: build web
-
+        channel: 'beta'
+    - run: flutter pub get
+    - run: flutter build web
+      
     - name: deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
