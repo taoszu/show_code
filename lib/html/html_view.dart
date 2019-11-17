@@ -47,7 +47,6 @@ class _HtmlViewState extends State<HtmlView> {
           String nodeTagName = node.localName;
 
           if (ParseHelper.isBlockElement(nodeTagName)) {
-
             final textSpans = parseElement(node);
             if (textSpans.length > 0) {
               final lastSpan = textSpans.last;
@@ -61,7 +60,6 @@ class _HtmlViewState extends State<HtmlView> {
             children.addAll(parseElement(node));
           }
         } else {
-
           final textSpan = genTextSpanWidget(
               text: node.text, textStyle: TextStyle(color: Colors.black54));
           if (textSpan != null) {
@@ -70,7 +68,6 @@ class _HtmlViewState extends State<HtmlView> {
         }
       });
     } else {
-
       final textSpan = genTag(selfElement);
       if (textSpan != null) {
         children.add(textSpan);
@@ -80,10 +77,10 @@ class _HtmlViewState extends State<HtmlView> {
   }
 
   genTag(dom.Element selfElement) {
-    String tagName = selfElement.localName ;
+    String tagName = selfElement.localName;
     print(tagName);
 
-    switch(tagName) {
+    switch (tagName) {
       case BlockElements.img:
         final imgTag = ImgTag(selfElement);
 
@@ -96,9 +93,10 @@ class _HtmlViewState extends State<HtmlView> {
   }
 
   genImg(ImgTag imgTag) {
-    return WidgetSpan(child: Image.network(
-      imgTag.src
-    ));
+    if (kIsWeb) {
+      return null;
+    }
+    return WidgetSpan(child: Image.network(imgTag.src));
   }
 
   // 生成text
@@ -121,19 +119,19 @@ class _HtmlViewState extends State<HtmlView> {
       if (ParseHelper.isFontStyleElement(tagName)) {
         return genTextSpanWidget(
             text: text, textStyle: handleStyleElement(tagName));
-
       } else if (ParseHelper.isBgStyleElement(tagName)) {
         // web的WidgetSpan有bug
         if (kIsWeb) {
           return genTextSpanWidget(text: text);
         } else {
+          print(textTag.parentName + " " + textTag.name);
+          print(textTag.text);
           WidgetSpan blockSpan = genBlockSpanWidget(text: text);
           return blockSpan;
         }
-
       }
-    } else if(ParseHelper.isDecorationStyleElement(tagName)) {
-      if(ParseHelper.isListElement(textTag.parentName)) {
+    } else if (ParseHelper.isDecorationStyleElement(tagName)) {
+      if (ParseHelper.isListElement(textTag.parentName)) {
         return genUlWidget(textTag);
       }
     } else {
@@ -142,11 +140,10 @@ class _HtmlViewState extends State<HtmlView> {
   }
 
   genUlWidget(TextTag textTag) {
-    if(BlockElements.ol == textTag.parentName) {
+    if (BlockElements.ol == textTag.parentName) {
       String liText = '   ${textTag.realIndex}.  ${textTag.text}';
       return genLiTextSpanWidget(text: liText);
-
-    } else if(BlockElements.ul == textTag.parentName) {
+    } else if (BlockElements.ul == textTag.parentName) {
       String liText = '   •  ${textTag.text}';
       return genLiTextSpanWidget(text: liText);
     }
@@ -164,16 +161,15 @@ class _HtmlViewState extends State<HtmlView> {
 
   genBlockSpanWidget({@required String text}) {
     return WidgetSpan(
-        child: DecoratedBox(
-            decoration: BoxDecoration(color: Color(0XFFF8F8F8)),
+        child: Container(
+            width: double.infinity,
+            color: Color(0XFFF8F8F8),
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.all(12),
-              child: Text(text, style: TextStyle(
-                color: Color(0xFF333333),
-                height: 1.75
-              )),
+              child: Text(text.trim(),
+                  style: TextStyle(color: Color(0xFF333333), height: 1.75)),
             )));
   }
 
