@@ -7,6 +7,7 @@ class ParseHelper {
     BlockElements.ul,
     BlockElements.ol,
     BlockElements.li,
+    BlockElements.img,
 
     StyleElements.h1,
     StyleElements.h2,

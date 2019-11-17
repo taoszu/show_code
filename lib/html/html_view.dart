@@ -81,13 +81,25 @@ class _HtmlViewState extends State<HtmlView> {
 
   genTag(dom.Element selfElement) {
     String tagName = selfElement.localName ;
+    print(tagName);
+
     switch(tagName) {
+      case BlockElements.img:
+        final imgTag = ImgTag(selfElement);
+
+        return genImg(imgTag);
+
       default:
         final textTag = TextTag(selfElement);
         return genText(textTag);
     }
   }
 
+  genImg(ImgTag imgTag) {
+    return WidgetSpan(child: Image.network(
+      imgTag.src
+    ));
+  }
 
   // 生成text
   genText(TextTag textTag) {
@@ -121,7 +133,6 @@ class _HtmlViewState extends State<HtmlView> {
 
       }
     } else if(ParseHelper.isDecorationStyleElement(tagName)) {
-      print(textTag.parentName);
       if(ParseHelper.isListElement(textTag.parentName)) {
         return genUlWidget(textTag);
       }
