@@ -51,8 +51,8 @@ class _HtmlViewState extends State<HtmlView> {
             if (textSpans.length > 0) {
               final lastSpan = textSpans.last;
               if (lastSpan is TextSpan) {
-                textSpans.last =
-                    TextSpan(text: lastSpan.text + "\n", style: lastSpan.style);
+                textSpans.last = TextSpan(
+                    text: lastSpan.text + "\n\n", style: lastSpan.style);
               }
             }
             children.addAll(textSpans);
@@ -61,7 +61,8 @@ class _HtmlViewState extends State<HtmlView> {
           }
         } else {
           final textSpan = genTextSpanWidget(
-              text: node.text, textStyle: TextStyle(color: Colors.black54));
+              text: node.text,
+              textStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)));
           if (textSpan != null) {
             children.add(textSpan);
           }
@@ -78,7 +79,6 @@ class _HtmlViewState extends State<HtmlView> {
 
   genTag(dom.Element selfElement) {
     String tagName = selfElement.localName;
-    print(tagName);
 
     switch (tagName) {
       case BlockElements.img:
@@ -124,10 +124,7 @@ class _HtmlViewState extends State<HtmlView> {
         if (kIsWeb) {
           return genTextSpanWidget(text: text);
         } else {
-          print(textTag.parentName + " " + textTag.name);
-          print(textTag.text);
-          WidgetSpan blockSpan = genBlockSpanWidget(text: text);
-          return blockSpan;
+          return genBlockSpanWidget(textTag);
         }
       }
     } else if (ParseHelper.isDecorationStyleElement(tagName)) {
@@ -159,18 +156,25 @@ class _HtmlViewState extends State<HtmlView> {
     return TextSpan(text: text, style: realStyle);
   }
 
-  genBlockSpanWidget({@required String text}) {
-    return WidgetSpan(
-        child: Container(
-            width: double.infinity,
-            color: Color(0XFFF8F8F8),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(12),
-              child: Text(text.trim(),
-                  style: TextStyle(color: Color(0xFF333333), height: 1.75)),
-            )));
+  genBlockSpanWidget(TextTag textTag) {
+    String text = textTag.text.trim();
+    if (textTag.parentName == StyleElements.pre) {
+      return WidgetSpan(
+          child: Container(
+              width: double.infinity,
+              color: Color(0XFFF8F8F8),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.all(12),
+                child: Text(text,
+                    style: TextStyle(color: Color(0xFF333333), height: 1.75)),
+              )));
+    } else {
+
+      return TextSpan(text: " " + text + "  ", style:
+          TextStyle(fontSize: 14, color: Color(0xFFFF502C), backgroundColor: Color(0xFFFFF5F5)));
+    }
   }
 
   genTextSpanWidget({@required String text, TextStyle textStyle}) {
@@ -182,7 +186,7 @@ class _HtmlViewState extends State<HtmlView> {
     if (realStyle == null) {
       realStyle = TextStyle(fontSize: 16, color: Color(0xFF333333));
     }
-    return TextSpan(text: text, style: realStyle);
+    return TextSpan(text: text.trim(), style: realStyle);
   }
 
   handleStyleElement(String tagName) {

@@ -23,11 +23,9 @@ class HtmlTag {
 
 class TextTag extends HtmlTag {
 
-  TextTag(dom.Element self):super(self) {
-    text = self.text;
-  }
+  TextTag(dom.Element self):super(self);
 
-  String text;
+  get text => self.text.trim() ;
 
   get isEmpty => text == null || text.length == 0;
 }
