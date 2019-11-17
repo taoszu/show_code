@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
+import 'package:show_code/html/html_tag.dart';
 import 'package:show_code/html/parse_helper.dart';
 
 class HtmlView extends StatefulWidget {
@@ -36,18 +37,17 @@ class _HtmlViewState extends State<HtmlView> {
   }
 
   // 解析html节点信息
-  List<InlineSpan> parseElement(dom.Element childElement) {
+  List<InlineSpan> parseElement(dom.Element selfElement) {
     List<InlineSpan> children = [];
-    String tagName = childElement.localName;
-
     // 如果还有html标签的话 继续遍历
     // 否则就是文本内容
-    if (childElement.children.length > 0) {
-      childElement.nodes.forEach((node) {
+    if (selfElement.children.length > 0) {
+      selfElement.nodes.forEach((node) {
         if (node is dom.Element) {
           String nodeTagName = node.localName;
 
           if (ParseHelper.isBlockElement(nodeTagName)) {
+
             final textSpans = parseElement(node);
             if (textSpans.length > 0) {
               final lastSpan = textSpans.last;
@@ -61,6 +61,7 @@ class _HtmlViewState extends State<HtmlView> {
             children.addAll(parseElement(node));
           }
         } else {
+
           final textSpan = genTextSpanWidget(
               text: node.text, textStyle: TextStyle(color: Colors.black54));
           if (textSpan != null) {
@@ -69,7 +70,8 @@ class _HtmlViewState extends State<HtmlView> {
         }
       });
     } else {
-      final textSpan = genText(childElement, tagName);
+
+      final textSpan = genTag(selfElement);
       if (textSpan != null) {
         children.add(textSpan);
       }
@@ -77,18 +79,29 @@ class _HtmlViewState extends State<HtmlView> {
     return children;
   }
 
-  // 生成text
-  genText(dom.Element childElement, String tagName) {
-    if (childElement == null ||
-        childElement.text == null ||
-        childElement.text.length == 0) {
-      return null;
+  genTag(dom.Element selfElement) {
+    String tagName = selfElement.localName ;
+    switch(tagName) {
+      default:
+        final textTag = TextTag(selfElement);
+        return genText(textTag);
     }
-    return genTextSpan(childElement.text, tagName);
   }
 
-  genTextSpan(String data, String tagName) {
+
+  // 生成text
+  genText(TextTag textTag) {
+    if (textTag.isEmpty) {
+      return null;
+    }
+    return genTextSpan(textTag);
+  }
+
+  genTextSpan(TextTag textTag) {
+    String data = textTag.text;
     String text = data;
+    String tagName = textTag.name;
+
     if (ParseHelper.isBlockElement(tagName)) {
       text = data + "\n";
     }
@@ -96,6 +109,7 @@ class _HtmlViewState extends State<HtmlView> {
       if (ParseHelper.isFontStyleElement(tagName)) {
         return genTextSpanWidget(
             text: text, textStyle: handleStyleElement(tagName));
+
       } else if (ParseHelper.isBgStyleElement(tagName)) {
         // web的WidgetSpan有bug
         if (kIsWeb) {
@@ -104,10 +118,37 @@ class _HtmlViewState extends State<HtmlView> {
           WidgetSpan blockSpan = genBlockSpanWidget(text: text);
           return blockSpan;
         }
+
+      }
+    } else if(ParseHelper.isDecorationStyleElement(tagName)) {
+      print(textTag.parentName);
+      if(ParseHelper.isListElement(textTag.parentName)) {
+        return genUlWidget(textTag);
       }
     } else {
       return genTextSpanWidget(text: text);
     }
+  }
+
+  genUlWidget(TextTag textTag) {
+    if(BlockElements.ol == textTag.parentName) {
+      String liText = '   ${textTag.realIndex}.  ${textTag.text}';
+      return genLiTextSpanWidget(text: liText);
+
+    } else if(BlockElements.ul == textTag.parentName) {
+      String liText = '   •  ${textTag.text}';
+      return genLiTextSpanWidget(text: liText);
+    }
+    return null;
+  }
+
+  genLiTextSpanWidget({@required String text}) {
+    if (text == null || text.trim().length == 0) {
+      return null;
+    }
+
+    TextStyle realStyle = TextStyle(fontSize: 16, color: Color(0xFF333333));
+    return TextSpan(text: text, style: realStyle);
   }
 
   genBlockSpanWidget({@required String text}) {
