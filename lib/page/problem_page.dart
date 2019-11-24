@@ -156,6 +156,7 @@ index.html是入口，代码逻辑都编译在main.dart.js里面。
 * [GitHub Actions 入门教程](http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html)
 
         ''');
+        print(html);
         if (mounted) {
           setState(() {
             this.problemHtml = html;

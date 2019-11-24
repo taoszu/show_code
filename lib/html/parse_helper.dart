@@ -19,6 +19,7 @@ class ParseHelper {
 
   static const _fontStyleElements = [
     StyleElements.strong,
+    StyleElements.a,
     StyleElements.h1,
     StyleElements.h2,
     StyleElements.h3,
@@ -69,8 +70,6 @@ class ParseHelper {
 }
 
 
-
-
 class BlockElements {
   static const p = "p";
   static const div = "div";
@@ -88,6 +87,7 @@ class StyleElements {
   static const code = "code";
   static const pre = "pre";
   static const li = "li";
+  static const a = "a";
 
   static const h1 = "h1";
   static const h2 = "h2";

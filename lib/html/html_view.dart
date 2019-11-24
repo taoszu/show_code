@@ -4,6 +4,10 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:show_code/html/html_tag.dart';
 import 'package:show_code/html/parse_helper.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:universal_html/prefer_universal/html.dart' as html;
 
 class HtmlView extends StatefulWidget {
   HtmlView({@required this.data});
@@ -40,12 +44,14 @@ class _HtmlViewState extends State<HtmlView> {
   // 解析html节点信息
   List<InlineSpan> parseElement(dom.Element selfElement) {
     List<InlineSpan> children = [];
-    // 如果还有html标签的话 继续遍历
+ // 如果还有html标签的话 继续遍历
     // 否则就是文本内容
+    print(selfElement.localName + " " + selfElement.children.length.toString());
     if (selfElement.children.length > 0) {
       selfElement.nodes.forEach((node) {
         if (node is dom.Element) {
           String nodeTagName = node.localName;
+          print(selfElement.localName + "->" + nodeTagName);
 
           if (ParseHelper.isBlockElement(nodeTagName)) {
             final textSpans = parseElement(node);
@@ -84,7 +90,6 @@ class _HtmlViewState extends State<HtmlView> {
     switch (tagName) {
       case BlockElements.img:
         final imgTag = ImgTag(selfElement);
-
         return genImg(imgTag);
 
       default:
@@ -187,7 +192,21 @@ class _HtmlViewState extends State<HtmlView> {
     if (realStyle == null) {
       realStyle = TextStyle(fontSize: 16, color: Color(0xFF333333));
     }
-    return TextSpan(text: text.trim(), style: realStyle);
+    return TextSpan(text: text.trim(), style: realStyle ,recognizer: TapGestureRecognizer()
+    ..onTap=(){
+      print("ontap");
+      _launchUrl("https://juejin.im/post/5db564cfe51d452a3d773c8c");
+    });
+  }
+
+  _launchUrl(String url) async {
+    if (kIsWeb) {
+      html.window.open(url, "");
+    } else {
+      if (await canLaunch(url)) {
+        await launch(url);
+      }
+    }
   }
 
   handleStyleElement(String tagName) {
@@ -199,6 +218,12 @@ class _HtmlViewState extends State<HtmlView> {
       switch (tagName) {
         case StyleElements.strong:
           return textStyle.merge(TextStyle(fontWeight: FontWeight.bold));
+
+        case StyleElements.a:
+          return textStyle.merge(TextStyle(
+              decoration: TextDecoration.underline,
+              decorationColor: Color(0XFF0269c8),
+              fontSize: 16,  color: Color(0XFF0269c8)));
       }
     }
     return textStyle;
