@@ -69,10 +69,6 @@ file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/dio-3.0.3/lib/src/response.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/dio-3.0.3/lib/src/transformer.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/dio-3.0.3/lib/src/utils.dart
-file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/flutter_html-0.11.0/lib/flutter_html.dart
-file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/flutter_html-0.11.0/lib/html_parser.dart
-file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/flutter_html-0.11.0/lib/image_properties.dart
-file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/flutter_html-0.11.0/lib/rich_text_parser.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/hive-1.0.0/lib/hive.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/hive-1.0.0/lib/src/adapters/big_int_adapter.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/.pub-cache/hosted/pub.dartlang.org/hive-1.0.0/lib/src/adapters/date_time_adapter.dart
@@ -366,6 +362,7 @@ file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/recording_canvas.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/runtime_delegate.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/surface.dart
+file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/text.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/util.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/vertices.dart
 file:///opt/hostedtoolcache/flutter/1.9.1-hotfix.6-stable/x64/bin/cache/flutter_web_sdk/lib/_engine/engine/compositor/viewport_metrics.dart
