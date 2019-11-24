@@ -31,6 +31,7 @@ class _HtmlViewState extends State<HtmlView> {
     final children = parseElement(document.body);
 
     return SingleChildScrollView(
+      padding: EdgeInsets.only(left: 16, right: 16),
       physics: BouncingScrollPhysics(),
       child: RichText(text: TextSpan(text: "", children: children)),
     );
